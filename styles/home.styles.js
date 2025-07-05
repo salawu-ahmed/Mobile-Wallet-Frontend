@@ -1,6 +1,6 @@
 // styles/home.styles.js
 import { StyleSheet } from "react-native";
-import COLORS  from "../../constants/colors.js";
+import { COLORS }  from "../constants/colors.js";
 
 export const styles = StyleSheet.create({
   container: {
