@@ -1,7 +1,11 @@
 import { useSignIn } from '@clerk/clerk-expo'
 import { Link, useRouter } from 'expo-router'
 import React from 'react'
-import { Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { styles } from '../../styles/auth.styles.js'
+import { COLORS } from './../../constants/colors.js'
+import { Ionicons } from '@expo/vector-icons'
 
 
 export default function Page() {
@@ -10,15 +14,17 @@ export default function Page() {
 
     const [emailAddress, setEmailAddress] = React.useState('')
     const [password, setPassword] = React.useState('')
+    const [error, setError] = React.useState('')
 
     // handle submission of the sign-in form 
     const onSignInPress = async () => {
+        // a boolean value that checks whether the signIn object is loaded.
         if (!isLoaded) return
 
         // start the sign-in process using the email and password provided 
         try {
             const signInAttempt = await signIn.create({
-                emailAddress,
+                identifier: emailAddress,
                 password
             })
 
@@ -34,34 +40,73 @@ export default function Page() {
             }
         } catch (error) {
             console.error(JSON.stringify(error, null, 2));
+            if(error.errors?.[0]?.code === 'form_password_incorrect') {
+                setError('Password is incorrect, please try again.')
+            } else {
+                setError('An error has occured, please try again.')
+            }
         }
     }
 
 
     return (
-        <View>
-            <Text>Sign in</Text>
-            <TextInput
-                autoCapitalize='none'
-                value={emailAddress}
-                placeholder='Enter email'
-                onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
-            />
-            <TextInput
-                value={password}
-                placeholder='Enter password'
-                secureTextEntry={true}
-                onChangeText={(password) => setPassword(password)}
-            />
-            <TouchableOpacity onPress={onSignUpPress}>
-                <Text>Continue</Text>
-            </TouchableOpacity>
-            <View style={{ display: 'flex', flexDirection: 'row', gap: 3 }}>
-                <Text>Already have an account?</Text>
-                <Link href='/sign-in'>
-                    <Text>Sign in</Text>
-                </Link>
+        <KeyboardAwareScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={{ flexGrow: 1 }}
+            enableOnAndroid={true}
+            enableAutomaticScroll={true}
+            extraScrollHeight={100}
+            showsVerticalScrollIndicator={false}
+        >
+            <View style={styles.container}>
+                <Image source={require('../../assets/images/revenue-i4.png')} style={styles.illustration} />
+                <Text style={styles.title}>Welcome Back!</Text>
+
+                {
+                    error ? (
+                        <View style={styles.errorBox}>
+                            <Ionicons name='alert-circle' size={20} color={COLORS.expense} />
+                            <Text style={styles.errorText}>{error}</Text>
+                            <TouchableOpacity onPress={() => setError('')}>
+                                <Ionicons name='close' />
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        null
+                    )
+                }
+
+                <TextInput
+                    style={[styles.input, error && styles.errorInput]}
+                    autoCapitalize='none'
+                    value={emailAddress}
+                    placeholder='Enter email'
+                    placeholderTextColor='#9A8478'
+                    onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
+                />
+
+                <TextInput
+                    style={[styles.input, error && styles.errorInput]}
+                    value={password}
+                    placeholder='Enter password'
+                    placeholderTextColor='#9A8478'
+                    secureTextEntry={true}
+                    onChangeText={(password) => setPassword(password)}
+                />
+
+                <TouchableOpacity onPress={onSignInPress} style={styles.button} >
+                    <Text style={styles.buttonText}>Sign In</Text>
+                </TouchableOpacity>
+
+                <View style={styles.footerContainer}>
+                    <Text style={styles.footerText}>Don&apos;t have an account?</Text>
+                    <Link href='/sign-up' asChild>
+                        <TouchableOpacity>
+                            <Text style={styles.linkText}>Sign up</Text>
+                        </TouchableOpacity>
+                    </Link>
+                </View>
             </View>
-        </View>
+        </KeyboardAwareScrollView>
     )
 }
