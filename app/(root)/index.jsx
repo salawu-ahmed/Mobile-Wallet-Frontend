@@ -4,6 +4,7 @@ import { SignedIn, SignedOut, useUser } from '@clerk/clerk-expo'
 import { SignOutButton } from '../../components/SignOutButton'
 import { Link } from 'expo-router'
 import { useTransactions } from '../../hooks/useTransactions'
+import PageLoader from '../../components/PageLoader'
 
 const index = () => {
     const { user } = useUser()
@@ -13,10 +14,9 @@ const index = () => {
         loadData
     }, [loadData])
 
-    console.log('transactions',transactions);
-    console.log('summary',summary);
-    console.log('UserId', user.id);
-    
+    if (isLoading) {
+        return <PageLoader />
+    }
     
     return (
         <View>
