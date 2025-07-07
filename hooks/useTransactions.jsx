@@ -11,7 +11,7 @@ export const useTransactions = (userId) => {
         expenses: 0
     })
 
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
 
     // useCallback is used for performance optimization
     // useCallback will cache the result of the function and only recreate or 
