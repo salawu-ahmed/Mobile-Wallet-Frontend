@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import {Alert} from 'react-native'
 
-const API_URL = 'https://mobile-wallet-backend.onrender.com/api'
+const API_URL = 'https://mobile-wallet-backend.onrender.com'
 
 export const useTransactions = (userId) => {
     const [transactions, setTransactions] = useState([])
@@ -18,7 +18,7 @@ export const useTransactions = (userId) => {
     // call it when the dependencies change.
     const fetchTransactions = useCallback(async () => {
         try {
-            const response = await fetch(`${API_URL}/transactions/${userId}`)
+            const response = await fetch(`${API_URL}/api/transactions/${userId}`)
             const data = await response.json()
             setTransactions(() => data)
         } catch (error) {
@@ -28,7 +28,7 @@ export const useTransactions = (userId) => {
 
     const fetchSummary = useCallback(async () => {
         try {
-            const response = await fetch(`${API_URL}/transactions/summary/${userId}`)
+            const response = await fetch(`${API_URL}/api/transactions/summary/${userId}`)
             const data = await response.json()
             setSummary(() => data)
         } catch (error) {
@@ -64,7 +64,6 @@ export const useTransactions = (userId) => {
         } catch (error) {
             console.error('Failed to delete transaction', error);
             Alert.alert('Error, failed to delete transaction', error.message)
-            
         }
     })
 
