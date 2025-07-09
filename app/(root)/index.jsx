@@ -14,7 +14,7 @@ import NoTransactionsFound from '../../components/NoTransactionsFound'
 const index = () => {
     const { user } = useUser()
     const router = useRouter()
-    const { transactions, summary, isLoading, loadData, deleteTransactions } = useTransactions(user.id)
+    const { transactions, summary, isLoading, loadData, deleteTransaction } = useTransactions(user.id)
     const [refreshing, setRefreshing] = React.useState(false)
     console.log(transactions);
     
@@ -38,13 +38,13 @@ const index = () => {
             'Are you sure you want to delete this transaction?',
             [
                 {
-                    title: 'Cancel',
+                    text: 'Cancel',
                     style:'cancel',
                 },
                 {
-                    title: 'Delete',
+                    text: 'Delete',
                     style:'destructive',
-                    onPress: () => deleteTransactions(id)
+                    onPress: () => deleteTransaction(id)
                 }
             ]
         )
@@ -98,8 +98,8 @@ const index = () => {
                 style={styles.transactionsList}
                 contentContainerStyle={styles.transactionsListContent}
                 data={transactions}
-                renderItem={(item) => {
-                    <TransactionItem item={item} onDelete={handleDelete}/>
+                renderItem={({item}) => {
+                    return <TransactionItem item={item} onDelete={handleDelete}/>
                 }}
                 ListEmptyComponent={<NoTransactionsFound />}
                 showsVerticalScrollIndicator={false}

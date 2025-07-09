@@ -13,7 +13,7 @@ const CATEGORIES = [
     { id: "transaportation", name: "Transaportation", icon: "car" },
     { id: "Entertainment", name: "Entertainment", icon: "film" },
     { id: "bills", name: "Bills", icon: "receipt" },
-    { id: "income", name: "income", icon: "cash" },
+    { id: "income", name: "Income", icon: "cash" },
     { id: "other", name: "Other", icon: "ellipsis-horizontal" },
 ]
 
@@ -35,7 +35,9 @@ const CreateScreen = () => {
         }
         if (!selectedCategory) return Alert.alert('Error', 'Please select a category')
 
+
         try {
+            setIsLoading(true)
             // format the amount 
             const formattedAmount = isExpense ? -Math.abs(parseFloat(amount)) : Math.abs(parseFloat(amount))
             const response = await fetch(`${API_URL}/api/transactions`, {
@@ -57,6 +59,7 @@ const CreateScreen = () => {
             Alert.alert('Success', 'Transaction created successfully')
             router.back()
         } catch (error) {
+            setIsLoading(false)
             Alert.alert('Error', error.message || 'Failed to create transactions')
             console.error('Error creating the transactions', error);
         } finally {
@@ -73,7 +76,7 @@ const CreateScreen = () => {
                 <Text style={styles.headerTitle}>New Transactions</Text>
                 <TouchableOpacity
                     style={styles.saveButtonContainer}
-                    onPress={() => handleCreate}
+                    onPress={() => handleCreate()}
                     disabled={isLoading}
                 >
                     <Text style={[styles.saveButton, isLoading && styles.saveButtonDisabled]}>{isLoading ? 'Saving...' : 'Save'}</Text>
@@ -107,13 +110,12 @@ const CreateScreen = () => {
                         <Ionicons
                             name='arrow-down-circle'
                             size={22}
-                            color={isExpense ? COLORS.white : COLORS.expense}
+                            color={!isExpense ? COLORS.white : COLORS.expense}
                             style={styles.typeIcon}
                         />
                         <Text
                             style={[styles.typeButtonText, !isExpense && styles.typeButtonTextActive]}
-
-                        >Expense</Text>
+                        >Income</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -132,7 +134,7 @@ const CreateScreen = () => {
 
 
                 {/* INPUT CONTAINER */}
-                <View>
+                <View style={styles.inputContainer}>
                     <Ionicons
                         name='create-outline'
                         size={22}
@@ -150,13 +152,13 @@ const CreateScreen = () => {
 
                 {/* TITLE */}
                 <Text style={styles.sectionTitle}>
-                    <Ionicons name='pricetag-outline' size={16} color={COLORS.text} />Category
+                    <Ionicons name='pricetag-outline' size={16} color={COLORS.text} /> Category
                 </Text>
 
                 {/* CATEGORIES */}
                 <View style={styles.categoryGrid}>
                     {CATEGORIES.map((category) => {
-                        <TouchableOpacity
+                        return <TouchableOpacity
                             key={category.id}
                             style={[styles.categoryButton, selectedCategory === category.name && styles.categoryButtonActive]}
                             size={20}
@@ -174,7 +176,6 @@ const CreateScreen = () => {
                                     selectedCategory === category.name && styles.categoryButtonTextActive
                                 ]}
                             >{category.name}</Text>
-
                         </TouchableOpacity>
                     })}
                 </View>

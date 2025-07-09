@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react'
 import {Alert} from 'react-native'
-
-const API_URL = 'https://mobile-wallet-backend.onrender.com'
+import { API_URL } from '../constants/api'
 
 export const useTransactions = (userId) => {
     const [transactions, setTransactions] = useState([])
@@ -53,7 +52,7 @@ export const useTransactions = (userId) => {
 
     const deleteTransaction = useCallback(async (transactionId) => {
         try {
-            const response = await fetch(`${API_URL}/transactions/${transactionId}`, {
+            const response = await fetch(`${API_URL}/api/transactions/${transactionId}`, {
                 method: 'DELETE'
             })
             if (!response.ok) throw new Error('Failed to delete transaction')
